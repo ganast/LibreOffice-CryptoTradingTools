@@ -1,0 +1,99 @@
+REM ****************************************************************************
+REM LibreOfficeCalcCryptoMacros
+REM ****************************************************************************
+
+REM Copyright (c) 2022 George Anastassakis (ganast@ganast.com)
+
+REM Licensed under the MIT License as described in LICENSE
+
+
+REM ****************************************************************************
+REM String GetCoinbaseV2SpotPriceForPair(String)
+REM ****************************************************************************
+Function GetCoinbaseV2SpotPriceForPair(pair as String) as String
+
+	Dim fa as Object, ti as Object, fi as Object
+	Dim s as String
+
+	fa = CreateUnoService("com.sun.star.ucb.SimpleFileAccess")
+	ti = CreateUnoService("com.sun.star.io.TextInputStream")
+	sr = ""
+
+	On Error GoTo err
+
+	si = fa.OpenFileRead("https://api.coinbase.com/v2/prices/" & pair & "/spot")
+	ti.InputStream = si
+
+	REM Do While Not oTextInputStream.isEOF
+	REM 	s = s & " " & ti.readLine
+	REM Loop
+
+	sr = ti.readLine
+	sr = Right(sr, Len(sr) - Len(pair) - 42)
+	sr = Left(sr, Len(sr) - 3)
+	sr = Replace(sr, ".", ",")
+
+	si.closeInput
+	ti.closeInput
+
+	GoTo done
+
+err:
+
+	sr = Error$
+
+	Resume done
+
+done:
+
+	REM MsgBox(sr)
+
+	GetCoinbaseV2SpotPriceForPair = sr
+
+End Function
+
+
+REM ****************************************************************************
+REM String GetKrakenAskPriceForPair(String)
+REM ****************************************************************************
+Function GetKrakenAskPriceForPair(pair as String) as String
+
+	Dim fa as Object, ti as Object, fi as Object
+	Dim s as String
+
+	fa = CreateUnoService("com.sun.star.ucb.SimpleFileAccess")
+	ti = CreateUnoService("com.sun.star.io.TextInputStream")
+	sr = ""
+
+	On Error GoTo err
+
+	si = fa.OpenFileRead("https://api.kraken.com/0/public/Ticker?pair=" & pair)
+	ti.InputStream = si
+
+	REM Do While Not oTextInputStream.isEOF
+	REM 	s = s & " " & ti.readLine
+	REM Loop
+
+	sr = ti.readLine
+	sr = Right(sr, Len(sr) - Len(pair) - 34)
+	sr = Left(sr, InStr(sr, """") - 1
+	sr = Replace(sr, ".", ",")
+
+	si.closeInput
+	ti.closeInput
+
+	GoTo done
+
+err:
+
+	sr = Error$
+
+	Resume done
+
+done:
+
+	REM MsgBox(sr)
+
+	GetKrakenAskPriceForPair = sr
+
+End Function
