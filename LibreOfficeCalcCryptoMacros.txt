@@ -1,32 +1,27 @@
-REM ****************************************************************************
-REM LibreOfficeCalcCryptoMacros
-REM ****************************************************************************
-
-REM Copyright (c) 2022 George Anastassakis (ganast@ganast.com)
-
-REM Licensed under the MIT License as described in LICENSE
-
+Sub CalculateAll()
+   ThisComponent.calculateAll()
+End Sub
 
 REM ****************************************************************************
-REM String GetCoinbaseV2SpotPriceForPair(String)
+REM * String GetCoinbaseV2SpotPriceForPair(String, String)                     *
 REM ****************************************************************************
-Function GetCoinbaseV2SpotPriceForPair(pair as String) as String
+Function GetCoinbaseV2SpotPriceForPair(a as String, b as String) as String
 
 	Dim fa as Object, ti as Object, fi as Object
 	Dim s as String
+
+	Dim pair as String
 
 	fa = CreateUnoService("com.sun.star.ucb.SimpleFileAccess")
 	ti = CreateUnoService("com.sun.star.io.TextInputStream")
 	sr = ""
 
+	pair = a & "-" & b
+
 	On Error GoTo err
 
 	si = fa.OpenFileRead("https://api.coinbase.com/v2/prices/" & pair & "/spot")
 	ti.InputStream = si
-
-	REM Do While Not oTextInputStream.isEOF
-	REM 	s = s & " " & ti.readLine
-	REM Loop
 
 	sr = ti.readLine
 	sr = Right(sr, Len(sr) - Len(pair) - 42)
@@ -54,29 +49,29 @@ End Function
 
 
 REM ****************************************************************************
-REM String GetKrakenAskPriceForPair(String)
+REM * String GetKrakenAskPriceForPair(String, String)                          *
 REM ****************************************************************************
-Function GetKrakenAskPriceForPair(pair as String) as String
+Function GetKrakenAskPriceForPair(a as String, b as String) as String
 
 	Dim fa as Object, ti as Object, fi as Object
 	Dim s as String
 
+	Dim pair as String
+
 	fa = CreateUnoService("com.sun.star.ucb.SimpleFileAccess")
 	ti = CreateUnoService("com.sun.star.io.TextInputStream")
 	sr = ""
+
+	pair = a & b
 
 	On Error GoTo err
 
 	si = fa.OpenFileRead("https://api.kraken.com/0/public/Ticker?pair=" & pair)
 	ti.InputStream = si
 
-	REM Do While Not oTextInputStream.isEOF
-	REM 	s = s & " " & ti.readLine
-	REM Loop
-
 	sr = ti.readLine
 	sr = Right(sr, Len(sr) - Len(pair) - 34)
-	sr = Left(sr, InStr(sr, """") - 1
+	sr = Left(sr, InStr(sr, """") - 1)
 	sr = Replace(sr, ".", ",")
 
 	si.closeInput

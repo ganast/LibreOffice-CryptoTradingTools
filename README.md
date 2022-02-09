@@ -12,11 +12,11 @@ paired specified, not by the system's locale or currency cell formats).
 
 Kraken (https://docs.kraken.com/rest/#operation/getTradableAssetPairs)
 
-=VALUE(GETKRAKENASKPRICEFORPAIR("BTCEUR"))
+=VALUE(GETKRAKENASKPRICEFORPAIR("BTC";"EUR"))
 
 Coinbase (https://developers.coinbase.com/api/v2#get-spot-price)
 
-=VALUE(GETCOINBASEV2SPOTPRICEFORPAIR("BTC-EUR"))
+=VALUE(GETCOINBASEV2SPOTPRICEFORPAIR("BTC";"EUR"))
 
 etc.
 
